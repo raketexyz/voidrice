@@ -5,6 +5,7 @@ export ZSH="$HOME/.config/zsh/oh-my-zsh"
 HISTSIZE=10000000
 SAVEHIST=10000000
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
+setopt inc_append_history
 
 ZSH_THEME="agnoster"
 DEFAULT_USER=$(whoami)
