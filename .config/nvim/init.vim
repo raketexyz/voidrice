@@ -39,6 +39,8 @@ Plug 'RRethy/vim-illuminate'
 Plug 'lervag/vimtex'
 Plug 'yuezk/vim-js'
 Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'plasticboy/vim-markdown'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 call plug#end()
 
 set title
@@ -85,6 +87,10 @@ let g:vimtex#re#neocomplete =
       \ . '|end%(\s*\[[^]]*\])?\s*\{[^}]*'
       \ . '|\a*'
       \ . ')'
+
+let g:vim_markdown_conceal = 0
+let g:tex_conceal = ""
+let g:vim_markdown_math = 1
 
 lua <<EOF
 require('nvim-autopairs').setup({})
