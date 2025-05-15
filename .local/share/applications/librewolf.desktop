@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=librewolf
+Exec=/usr/bin/librewolf --new-tab %u
