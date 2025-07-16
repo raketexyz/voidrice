@@ -13,6 +13,22 @@ if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xprofile" ]; then
 else
 	. "$HOME/.xprofile"
 fi
+
+# Apply remaps now and when a new input device is connected
+remapd &
+
+# Wallpaper
+feh --no-fehbg --bg-fill --randomize ~/.local/share/wallpaper
+
+# Compositing manager for translucency
+xcompmgr &
+
+# Notification daemon
+dunst &
+
+# Hide mouse after inactivity
+unclutter &
+
 # Activate dbus variables
 dbus-update-activation-environment --all
-dbus-launch ssh-agent dwm
+dbus-launch ssh-agent xmonad
