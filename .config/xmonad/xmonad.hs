@@ -54,9 +54,9 @@ logScreen n = userCodeDef "..." $ do
     , maybe "" (ppTitle def . ppTitleSanitize def) wt ]
     ++ catMaybes extras
 
-myLayout = smartBorders $ tiled ||| Mirror tiled ||| noBorders Full
+myLayout = tiled ||| Mirror tiled ||| noBorders Full
   where
-    tiled = avoidStruts $ Tall nmaster delta ratio
+    tiled = smartBorders . avoidStruts $ Tall nmaster delta ratio
     nmaster = 1
     ratio = 1/2
     delta = 3/100
