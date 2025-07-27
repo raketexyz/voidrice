@@ -6,30 +6,30 @@
 ;;; Packages
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (package-refresh-contents)
 
 (use-package vterm
-    :ensure t)
+  :ensure t)
 (use-package rust-mode)
 (use-package lua-mode)
 (use-package magit)
 (use-package gnuplot)
 (use-package ledger-mode)
 (use-package lsp-mode
-    :init (setq lsp-keymap-prefix "C-c l")
-    :hook ((gdscript-mode . lsp)
-	   (rust-mode . lsp)
-           (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp)
+  :init (setq lsp-keymap-prefix "C-c l")
+  :hook ((gdscript-mode . lsp)
+         (rust-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
 (use-package flycheck
-    :ensure t
-    :init (global-flycheck-mode))
+  :ensure t
+  :init (global-flycheck-mode))
 (use-package pdf-tools
-    :config (pdf-tools-install))
+  :config (pdf-tools-install))
 (use-package auctex
-    :ensure t)
+  :ensure t)
 
 ;;; General UI options
 (load-theme 'wombat)
@@ -55,7 +55,7 @@
 (setq-default LaTeX-item-indent 0)
 
 (add-hook 'TeX-after-compilation-finished-functions
-    #'TeX-revert-document-buffer)
+          #'TeX-revert-document-buffer)
 
 ;;; Source code editing
 (setq-default c-basic-offset 4)
@@ -72,31 +72,31 @@
 (global-set-key (kbd "C-c a") #'org-agenda)
 (global-set-key (kbd "C-c c") #'org-capture)
 (setq org-agenda-files '("/home/rakete/Documents/org/dates.org"
-			 "/home/rakete/Documents/org/log.org"
-			 "/home/rakete/Documents/org/life.org"
-			 "/home/rakete/Documents/org/todo.org"
-			 "/home/rakete/Documents/org/projects.org"))
+                         "/home/rakete/Documents/org/log.org"
+                         "/home/rakete/Documents/org/life.org"
+                         "/home/rakete/Documents/org/todo.org"
+                         "/home/rakete/Documents/org/projects.org"))
 
 ;;; Mail
 (setq send-mail-function 'smtpmail-send-it)
 
 (defun smtp-server-rakete ()
-    "Set the `smtpmail-' variables for `mail.rakete.xyz'."
-    (interactive)
-    (setq smtpmail-smtp-server "mail.rakete.xyz"
-          smtpmail-smtp-user "rakete@rakete.xyz"
-          smtpmail-stream-type 'ssl
-          smtpmail-smtp-service 465
-          smtpmail-servers-requiring-authorization "rakete.xyz"))
+  "Set the `smtpmail-' variables for `mail.rakete.xyz'."
+  (interactive)
+  (setq smtpmail-smtp-server "mail.rakete.xyz"
+        smtpmail-smtp-user "rakete@rakete.xyz"
+        smtpmail-stream-type 'ssl
+        smtpmail-smtp-service 465
+        smtpmail-servers-requiring-authorization "rakete.xyz"))
 
 (defun smtp-server-hu ()
-    "Set the `smtpmail-' variables for `mailhost.cms.hu-berlin.de'."
-    (interactive)
-    (setq smtpmail-smtp-server "mailhost.cms.hu-berlin.de"
-          smtpmail-smtp-user "davisala"
-          smtpmail-stream-type 'starttls
-          smtpmail-smtp-service 587
-          smtpmail-servers-requiring-authorization "hu-berlin.de"))
+  "Set the `smtpmail-' variables for `mailhost.cms.hu-berlin.de'."
+  (interactive)
+  (setq smtpmail-smtp-server "mailhost.cms.hu-berlin.de"
+        smtpmail-smtp-user "davisala"
+        smtpmail-stream-type 'starttls
+        smtpmail-smtp-service 587
+        smtpmail-servers-requiring-authorization "hu-berlin.de"))
 
 ;;; Browser
 (setq browse-url-browser-function 'browse-url-generic
