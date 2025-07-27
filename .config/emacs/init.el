@@ -38,6 +38,7 @@
 (tool-bar-mode -1)
 
 ;;; Text editing
+(setq backward-delete-char-untabify-method nil)
 (setq-default display-line-numbers-type 'relative)
 (setq-default fill-column 80)
 
@@ -58,9 +59,9 @@
           #'TeX-revert-document-buffer)
 
 ;;; Source code editing
-(setq-default c-basic-offset 4)
-(setq-default lisp-indent-offset 4)
-(setq-default lua-indent-level 4)
+(setq whitespace-style '(face tabs tab-mark trailing))
+(setq-default indent-tabs-mode nil)
+(global-whitespace-mode)
 (setq-default inferior-lisp-program "sbcl")
 
 (add-hook 'prog-mode-hook 'auto-fill-mode)
