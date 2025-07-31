@@ -26,11 +26,11 @@ xmobarLeft = statusBarPropTo
   (pure $ screenPP 0)
 xmobarRight = statusBarPropTo "_XMONAD_LOG_2" "xmobar -x 0" (pure $ screenPP 1)
 
-screenPP n = def
+screenPP n = xmobarPP
   { ppOrder = \(_:_:_:r) -> r
   , ppExtras = [ wsLogger n
                , logLayoutOnScreen n
-               , logTitleOnScreen n
+               , fmap (fmap $ xmobarColor "#0f0" "") $ logTitleOnScreen n
                ]
   }
 
@@ -39,15 +39,15 @@ wsLogger n = do
   winset <- gets windowset
   urgents <- readUrgents
 
-  let cur = case find ((== n) . S.screen) $ S.screens winset of
-        Just s -> xmobarColor "yellow" "" . S.tag . S.workspace $ s
-        Nothing -> ""
+  let cur = maybe "" (xmobarColor "yellow" "" . S.tag . S.workspace)
+        $ find ((== n) . S.screen) $ S.screens winset
   let others = map (S.tag . S.workspace) . filter ((/= n) . S.screen)
         $ S.screens winset
 
   let hidden = map S.tag . filter (isJust . S.stack) $ S.hidden winset
 
-  return . Just . intercalate " " . (others ++) . (: hidden) $ cur
+  return . Just . wrap "[" "]"
+    $ intercalate " " [concat others, cur, concat hidden]
 
 myLayout = avoidStruts (tiled ||| Mirror tiled) ||| noBorders Full
   where
