@@ -18,45 +18,40 @@ main = xmonad
        . ewmhFullscreen
        . ewmh
        . docks
+       . withSB (xmobarLeft <> xmobarRight)
        $ myConfig
 
+xmobarLeft = statusBarPropTo
+  "_XMONAD_LOG_1" "xmobar -x 1 ~/.config/xmobar/left.xmobarrc"
+  (pure $ screenPP 0)
+xmobarRight = statusBarPropTo "_XMONAD_LOG_2" "xmobar -x 0" (pure $ screenPP 1)
 
-myLog :: X ()
-myLog = centerLog >> leftLog
-  where
-    centerLog = logScreen 0 >>= xmonadPropLog' "_XMONAD_LOG_1"
-    leftLog = logScreen 1 >>= xmonadPropLog' "_XMONAD_LOG_2"
+screenPP n = def
+  { ppOrder = \(_:_:_:r) -> r
+  , ppExtras = [ wsLogger n
+               , logLayoutOnScreen n
+               , logTitleOnScreen n
+               ]
+  }
 
-logScreen :: ScreenId -> X String
-logScreen n = userCodeDef "..." $ do
+wsLogger :: ScreenId -> Logger
+wsLogger n = do
   winset <- gets windowset
   urgents <- readUrgents
-  sort' <- ppSort def
 
-  -- layout description
-  ld <- logLayoutOnScreen n
+  let cur = case find ((== n) . S.screen) $ S.screens winset of
+        Just s -> xmobarColor "yellow" "" . S.tag . S.workspace $ s
+        Nothing -> ""
+  let others = map (S.tag . S.workspace) . filter ((/= n) . S.screen)
+        $ S.screens winset
 
-  -- workspace list
-  let ws = pprWindowSet sort' urgents xmobarPP winset
+  let hidden = map S.tag . filter (isJust . S.stack) $ S.hidden winset
 
-  -- run extra loggers, ignoring any that generate errors.
-  extras <- mapM (userCodeDef Nothing) $ []
+  return . Just . intercalate " " . (others ++) . (: hidden) $ cur
 
-  -- window title
-  wt <- logTitleOnScreen n
-
-  return $! force
-    $ intercalate (ppSep def)
-    . filter (not . null)
-    . ppOrder def
-    $ [ ws
-    , maybe "Unknown" (ppLayout def) ld
-    , maybe "" (ppTitle def . ppTitleSanitize def) wt ]
-    ++ catMaybes extras
-
-myLayout = tiled ||| Mirror tiled ||| noBorders Full
+myLayout = avoidStruts (tiled ||| Mirror tiled) ||| noBorders Full
   where
-    tiled = smartBorders . avoidStruts $ Tall nmaster delta ratio
+    tiled = smartBorders $ Tall nmaster delta ratio
     nmaster = 1
     ratio = 1/2
     delta = 3/100
@@ -68,12 +63,8 @@ myConfig = def
   , normalBorderColor = "gray"
   , terminal = "kitty"
   , layoutHook = myLayout
-  , logHook = myLog
   , startupHook = startupHook def
-    >> spawnOnce "kitty emacs --daemon"
-    >> killAllStatusBars
-    >> spawnStatusBar "xmobar -x 0"
-    >> spawnStatusBar "xmobar -x 1 ~/.config/xmobar/left.xmobarrc" }
+    >> spawnOnce "kitty emacs --daemon" }
   `additionalKeysP`
     [ ("M-d", spawn "dmenu_run")
     , ("M-w", spawn "librewolf")
@@ -93,6 +84,7 @@ myConfig = def
     , ("M-r", spawn "xmonad --restart") ]
 
 toggleFloating :: Window -> X ()
-toggleFloating w = windows (\s -> if M.member w $ S.floating s
-                                  then S.sink w s
-                                  else S.float w (S.RationalRect (1/3) (1/4) (1/2) (4/5)) s)
+toggleFloating w = windows
+  (\s -> if M.member w $ S.floating s
+         then S.sink w s
+         else S.float w (S.RationalRect (1/3) (1/4) (1/2) (4/5)) s)
