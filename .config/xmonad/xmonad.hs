@@ -46,8 +46,8 @@ wsLogger n = do
 
   let hidden = map S.tag . filter (isJust . S.stack) $ S.hidden winset
 
-  return . Just . wrap "[" "]"
-    $ intercalate " " [concat others, cur, concat hidden]
+  return . Just . wrap "[" "]" . intercalate " "
+    $ filter (not . null) [concat others, cur, concat hidden]
 
 myLayout = avoidStruts (tiled ||| Mirror tiled) ||| noBorders Full
   where
